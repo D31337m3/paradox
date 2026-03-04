@@ -884,3 +884,115 @@ And markets, in the end, answer honestly.
 *This document is provided for informational purposes only. PARADOX is experimental infrastructure. Nothing in this whitepaper constitutes financial advice, investment advice, or a solicitation to purchase any financial instrument. Participants should conduct their own research and understand the risks before interacting with any smart contract.*
 
 *PARADOX — March 2026*
+
+---
+
+## 21. Version History & Changelog
+
+This section records all significant protocol, contract, and application changes since initial deployment. Versions follow semantic versioning (`MAJOR.MINOR.PATCH`). All on-chain actions are permanently verifiable via the linked transaction hashes.
+
+> **Version scheme:** The `2.x.x` line represents the current production generation. The initial deployment and pre-versioning work is recorded under `2.0.0` for reference.
+
+---
+
+### v2.0.60 — 2026-03-04
+**Security hardening: documentation & on-chain trust badges**
+- Whitepaper §13.1, §13.3.1, §16.3, §16.4, §11.5.3 updated to reflect completed ownership transfers
+- New `SecurityStatus` component in dApp Overview panel — 4 clickable on-chain proof badges
+- Trade panel contract card updated with inline trust verification badge links
+- Deployer wallet confirmed to hold zero remaining authority over any contract
+
+---
+
+### v2.0.59 — 2026-03-04
+**Security hardening: contract ownership transfers (on-chain)**
+
+| Contract | Action | New Owner | Transaction |
+|----------|--------|-----------|-------------|
+| `ParadoxToken (PDX)` | `renounceOwnership()` | `address(0)` — permanently ownerless | [`0x8a8282b7…`](https://polygonscan.com/tx/0x8a8282b7a4e9569e39401bcc9e361f9676eab711bf6ec0a01ae1205143060d65) |
+| `EpochControllerV2` | `transferOwnership()` | DAO Multisig `0xfed787…6166` | [`0xe32008e0…`](https://polygonscan.com/tx/0xe32008e0d8b6a5a23927759ddd63a4630338bea6e3a3fd77e582926f945cba15) |
+| `BurnReputationNFTv2` | `transferOwnership()` | DAO Multisig `0xfed787…6166` | [`0xdc42964d…`](https://polygonscan.com/tx/0xdc42964de1bec4c6e57531604f7e84c6723a18d47bde440ce2a0b76b29f6d860) |
+
+- Panel window positioning corrected — windows now open centred in the viewport on all desktop screen sizes
+- `transfer-ownership.js` Hardhat script added to contracts repository
+
+---
+
+### v2.0.58 — 2026-03-04
+**UI polish pass**
+- CSS `[data-panel]` overrides reduce section padding from `py-24` to `2rem` inside floating panels
+- Alternating section background overlays muted inside glass panels
+- Inter-section divider lines added inside panels
+- Panel scroll resets to top when switching tabs
+- Footer removed from main render (was invisible below Hero); replaced with slim version/chain strip inside every panel window
+- Dead anchor links cleaned from navigation
+
+---
+
+### v2.0.57 — 2026-03-04
+**Panel window viewport centering**
+- Panel windows now open precisely centred in the viewport (`top-1/2 / left-1/2 / translate(-50%,-50%)`)
+- Max height capped at `85vh`; mobile bottom sheet unchanged
+
+---
+
+### v2.0.56 — 2026-03-04
+**Navbar redesign: 3-column layout**
+- Left: PARADOX wordmark, version number, Polygon Primary Light logo
+- Centre: 5 tab navigation links with animated active underline indicator
+- Right: live green-pulse "Live · Polygon" status, Whitepaper button, wallet connect
+- Always frosted glass — no transparent-on-scroll state
+- Mobile: burger drawer with full tab list
+- TabBar row removed; tabs now exclusively in navbar
+
+---
+
+### v2.0.55 — 2026-03-04
+**Floating panel window layout**
+- All content sections moved into macOS-style floating glass panel windows
+- Hero particle canvas always rendered as persistent background
+- Panels open over the Hero; backdrop click or Escape key closes
+- Desktop: centred floating card; mobile: full-width bottom sheet
+- `PanelWindow.jsx` created with traffic-light title bar, scroll container, Escape key handler
+- `TabBar.jsx` removed from main layout; tabs integrated into Navbar centre
+
+---
+
+### v2.0.54 — 2026-03-04
+**App layout: 5-tab architecture**
+- Replaced single infinite-scroll page with 5-tab layout: Overview, Participate, NFTs, Trade, Community
+- Eliminated all anchor-scroll navigation
+- `TabBar.jsx` created as primary navigation component
+- Hero CTA buttons updated to open tab panels directly
+
+---
+
+### v2.0.53 — 2026-03-04
+**Versioning introduced**
+- `frontend/src/version.js` created — single source of truth for `APP_VERSION`
+- Version number displayed beneath PARADOX wordmark in Navbar
+- Local archive created: `paradox_v2.0.53.zip` (7 MB, no `node_modules`)
+- Instant-start mirror created: `paradox_mirror_v2.0.53.tar.xz` (145 MB, includes `node_modules`)
+
+---
+
+### Pre-v2.0.53 — 2026-03-04
+**Initial deployment & foundational build** *(recorded retroactively)*
+
+- **Initial deployment** (`b80694d`) — PARADOX behavioral liquidity experiment deployed to Polygon mainnet
+  - PDX Token: `0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09`
+  - EpochControllerV2: `0x473a89EB41D3903f56c054Ef0a16fB8594515e53`
+  - BurnReputationNFTv2: `0x7c147b31fA9fB4441dA937148E1600A72fa7f88A`
+  - TokenVesting: `0x75812E84490a06C5D81B31862c8AF0c5F6b436B7`
+  - ParadoxLog: `0x8731492605bf43D9fBe35dF02560ffE4e0B61589`
+  - All contracts source-verified on Sourcify (Chain 137)
+- **PDX token icon & favicon** (`99fcda1`) — brand assets added to dApp
+- **MyBurnNFTs fix** (`09a578f`, `29d377b`, `f109ec1`) — tier enum offset corrected (Bronze=0), `ownerOf` multicall error capture added, Hardhat ABI artifact format fixed (`.abi` extraction)
+- **Whitepaper: DAO treasury + formation terms** (`f109ec1`) — §11.4 treasury wallet status, §11.5 full DAO formation terms with trigger conditions, eligibility, council structure, charter requirements, anti-capture provisions
+- **Whitepaper: NFT seasonal art themes** (`8b97d8a`) — §9.5.1 added; Season = 2 epochs; Season 2+ artwork by commissioned digital artists selected via governance vote
+- **Treasury balance in LiveStats** (`8b97d8a`) — DAO multisig balance (`0xfed787…6166`) displayed as live stat card
+- **DAO multisig wallets generated** — two 2-of-2 hardware-secured Safe wallets provisioned for DAO treasury and rewards pool; stored offline, gitignored
+
+---
+
+*Changelog maintained from v2.0.53 onward. All version tags correspond to commits on the [public repository](https://github.com/D31337m3/paradox).*
