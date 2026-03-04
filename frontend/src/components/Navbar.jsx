@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ExternalLink, FileText } from "lucide-react";
 import { CONTRACT_ADDRESSES, BLOCK_EXPLORER } from "../contracts/addresses.js";
+import { APP_VERSION } from "../version.js";
 
 const links = [
   { label: "Stats",       href: "#stats" },
@@ -39,9 +40,12 @@ export default function Navbar({ onOpenWhitepaper }) {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-2">
-          <span className="text-2xl font-black tracking-tighter text-white text-glow">
-            PARA<span className="text-paradox-magenta">DOX</span>
-          </span>
+          <div className="flex flex-col leading-none">
+            <span className="text-2xl font-black tracking-tighter text-white text-glow">
+              PARA<span className="text-paradox-magenta">DOX</span>
+            </span>
+            <span className="text-[9px] font-mono text-slate-600 tracking-widest mt-0.5">v{APP_VERSION}</span>
+          </div>
           <span className="hidden sm:block text-xs text-purple-400 font-mono border border-purple-700/50 rounded px-2 py-0.5">
             POLYGON
           </span>
