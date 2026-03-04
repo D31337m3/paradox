@@ -4,17 +4,15 @@ import { Menu, X, ExternalLink, FileText } from "lucide-react";
 import { CONTRACT_ADDRESSES, BLOCK_EXPLORER } from "../contracts/addresses.js";
 import { APP_VERSION } from "../version.js";
 
-const links = [
-  { label: "Stats",       href: "#stats" },
-  { label: "Epochs",      href: "#epochs" },
-  { label: "Declare",     href: "#declare" },
-  { label: "Manifesto",   href: "#manifesto" },
-  { label: "Tokenomics",  href: "#tokenomics" },
-  { label: "Trade",       href: "#trade" },
-  { label: "Chat",        href: "#chat" },
+const NAV_TABS = [
+  { label: "Overview",    tab: "overview"    },
+  { label: "Participate", tab: "participate" },
+  { label: "NFTs",        tab: "nfts"        },
+  { label: "Trade",       tab: "trade"       },
+  { label: "Community",   tab: "community"   },
 ];
 
-export default function Navbar({ onOpenWhitepaper }) {
+export default function Navbar({ onOpenWhitepaper, activeTab, onTabChange }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -39,7 +37,7 @@ export default function Navbar({ onOpenWhitepaper }) {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <a href="#top" className="flex items-center gap-2">
+        <button onClick={() => onTabChange?.("overview")} className="flex items-center gap-2">
           <div className="flex flex-col leading-none">
             <span className="text-2xl font-black tracking-tighter text-white text-glow">
               PARA<span className="text-paradox-magenta">DOX</span>
@@ -49,16 +47,10 @@ export default function Navbar({ onOpenWhitepaper }) {
           <span className="hidden sm:block text-xs text-purple-400 font-mono border border-purple-700/50 rounded px-2 py-0.5">
             POLYGON
           </span>
-        </a>
+        </button>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-6">
-          {links.map(l => (
-            <a key={l.label} href={l.href}
-              className="text-sm text-slate-400 hover:text-white transition-colors duration-200 font-medium">
-              {l.label}
-            </a>
-          ))}
+        {/* Desktop actions */}
+        <div className="hidden md:flex items-center gap-4">
           {polygonscanUrl && (
             <a href={polygonscanUrl} target="_blank" rel="noreferrer"
               className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 font-mono transition-colors">
@@ -72,7 +64,6 @@ export default function Navbar({ onOpenWhitepaper }) {
             <FileText size={12} />
             Whitepaper
           </button>
-          {/* Wallet connect button */}
           <w3m-button size="sm" balance="hide" />
         </div>
 
@@ -95,11 +86,12 @@ export default function Navbar({ onOpenWhitepaper }) {
             className="md:hidden glass border-t border-paradox-border"
           >
             <div className="px-6 py-4 flex flex-col gap-4">
-              {links.map(l => (
-                <a key={l.label} href={l.href} onClick={() => setMenuOpen(false)}
-                  className="text-slate-300 hover:text-white py-1 text-sm font-medium">
-                  {l.label}
-                </a>
+              {NAV_TABS.map(t => (
+                <button key={t.tab}
+                  onClick={() => { onTabChange?.(t.tab); setMenuOpen(false); }}
+                  className="text-left text-slate-300 hover:text-white py-1 text-sm font-medium">
+                  {t.label}
+                </button>
               ))}
               <button
                 onClick={() => { setMenuOpen(false); onOpenWhitepaper(); }}
