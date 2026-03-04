@@ -55,8 +55,9 @@ export default function PanelWindow({ id, onClose, children }) {
           // Base
           "fixed z-[60] flex flex-col",
           "bg-[#0d0d14]/95 border border-white/10 shadow-2xl shadow-black/60",
-          // Desktop: truly centred in viewport
+          // Desktop: truly centred in viewport — reset all mobile sheet insets
           "md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2",
+          "md:bottom-auto md:right-auto",
           "md:w-[min(92vw,1100px)] md:max-h-[85vh]",
           "md:rounded-2xl",
           // Mobile: full-width bottom sheet
