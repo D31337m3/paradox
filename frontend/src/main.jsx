@@ -29,6 +29,8 @@ const config = createConfig({
     [polygon.id]: fallback([
       http(import.meta.env.VITE_POLYGON_RPC_URL || "https://polygon-rpc.com"),
       http("https://rpc.ankr.com/polygon"),
+      http("https://polygon.drpc.org"),
+      http("https://polygon-rpc.com"),
     ]),
   },
   connectors: [

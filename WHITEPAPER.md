@@ -542,7 +542,7 @@ Upon formation, an **Initial Governance Council** of **5 seats** shall be electe
   2. Approve and execute the transfer of DAO treasury tokens from staged wallets to the multisig
   3. Schedule the first open governance vote on epoch parameters
 
-The deployer wallet (`0x53201fFB7E6FA79CE2D48C082260cA42fE04Be13`) may not hold a council seat during the initial term but retains emergency-pause authority over contracts until the first governance vote explicitly transfers or revokes it.
+The deployer wallet (`0x53201fFB7E6FA79CE2D48C082260cA42fE04Be13`) may not hold a council seat during the initial term. As of Q1 2026, the deployer holds no owner authority over any PARADOX contract — ownership has been formally renounced (ParadoxToken) or transferred to the DAO multisig (EpochController, BurnReputationNFT). See §13.3.1.
 
 ---
 
@@ -641,7 +641,7 @@ The protocol's core contract. Key design decisions:
 
 ### 13.1 Design Principles
 
-**Minimal privilege surface**: The owner of each contract can only adjust parameters within bounded ranges. There is no function to drain user funds. Hoarder tokens can only be returned to the original hoarder. Burn rewards can only be paid to the original burner.
+**Minimal privilege surface**: The token contract (`ParadoxToken`) ownership has been formally **renounced** — its owner is `address(0)` and no further owner-controlled functions can ever be called. The `EpochControllerV2` and `BurnReputationNFTv2` contracts have had ownership transferred to the PARADOX DAO multisig (`0xfed787784C3C3f7101B46f06A847CB5D60Fa6166`), a 2-of-2 hardware-secured Safe. Any future owner action on those contracts requires two independent key holders to sign. There is no function to drain user funds. Hoarder tokens can only be returned to the original hoarder. Burn rewards can only be paid to the original burner.
 
 **Reentrancy protection**: `EpochControllerV2` inherits `ReentrancyGuard` from OpenZeppelin. All state-changing external calls (`declare`, `claimReward`, `claimBurnReward`, `reclaimTokens`) are non-reentrant.
 
@@ -660,7 +660,22 @@ All contracts inherit from audited OpenZeppelin v5 primitives:
 
 ### 13.3 Audit Status
 
-An independent smart contract audit is recommended prior to scaling the protocol to significant TVL. The codebase is publicly readable on Polygonscan. Community auditors are encouraged to review and report findings.
+An independent smart contract audit is recommended prior to scaling the protocol to significant TVL. The codebase is publicly readable on Polygonscan and source-verified on Sourcify. Community auditors are encouraged to review and report findings.
+
+### 13.3.1 Ownership & Trust Status
+
+The following ownership actions have been executed on Polygon mainnet and are permanently verifiable on-chain:
+
+| Contract | Action | New Owner | Transaction |
+|----------|--------|-----------|-------------|
+| `ParadoxToken` | `renounceOwnership()` | `address(0)` — ownerless | `0x8a8282b7a4e9569e...` |
+| `EpochControllerV2` | `transferOwnership()` | DAO Multisig `0xfed787...6166` | `0xe32008e0d8b6a5a2...` |
+| `BurnReputationNFTv2` | `transferOwnership()` | DAO Multisig `0xfed787...6166` | `0xdc42964de1bec4c6...` |
+
+**What this means:**
+- The PDX token can never be minted, paused, or modified by any party. It is a fully autonomous ERC-20.
+- The epoch controller and NFT require a **2-of-2 hardware multisig** for any parameter change or emergency withdrawal — no single key holder can act unilaterally.
+- Source code for all contracts is verified at [Sourcify](https://repo.sourcify.dev/137/0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09).
 
 ### 13.4 Known Limitations
 
@@ -741,10 +756,10 @@ PDX token value may decline to zero. There is no floor, no buyback mechanism, an
 Burn declarations are permanent and irrevocable. There is no mechanism to reverse a burn. Participants should only burn amounts they are willing to lose entirely.
 
 ### 16.3 Smart Contract Risk
-Despite following OpenZeppelin standards and sound security practices, the contracts have not been formally audited by a professional security firm. Edge cases or unexpected interactions may exist. The deployed contracts are immutable — bugs cannot be patched without deployer intervention through owner-controlled parameters.
+Despite following OpenZeppelin standards and sound security practices, the contracts have not been formally audited by a professional security firm. Edge cases or unexpected interactions may exist. The `ParadoxToken` is fully ownerless and immutable. The `EpochControllerV2` and `BurnReputationNFTv2` are governed by the DAO multisig — bugs in those contracts cannot be patched except through a 2-of-2 multisig action, and only within the bounds of existing owner-controlled parameters.
 
 ### 16.4 Governance Risk
-Governance parameters (emission bounds, burn cap, tier thresholds) can be changed by the contract owner. Future governance decentralization is planned but not yet implemented. Until on-chain governance is live, the deployer wallet retains owner privileges.
+Governance parameters (emission bounds, burn cap, tier thresholds) can only be changed by the DAO multisig (`0xfed787784C3C3f7101B46f06A847CB5D60Fa6166`), requiring 2-of-2 signatures. The deployer wallet has no remaining authority over any contract. Full on-chain DAO governance is planned for Q2 2026 per the formation terms in §11.5.
 
 ### 16.5 Liquidity Risk
 PDX liquidity is concentrated on QuickSwap. Shallow liquidity means large trades may experience significant price impact. LP providers may withdraw liquidity at any time.

@@ -10,3 +10,4 @@ contracts/cache/
 frontend/dist/
 node_modules/
 */node_modules/
+MULTISIG_WALLETS.txt

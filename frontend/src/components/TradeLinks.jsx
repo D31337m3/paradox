@@ -113,21 +113,41 @@ export default function TradeLinks() {
           ))}
         </div>
 
-        {/* Contract address display */}
+        {/* Contract address + trust signals */}
         {isDeployed && (
           <motion.div
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="glass rounded-2xl p-5 mb-10 flex flex-col sm:flex-row items-center justify-between gap-4"
+            className="glass rounded-2xl p-5 mb-10"
           >
-            <div>
-              <p className="text-xs text-slate-500 font-mono mb-1">PDX Contract Address (Polygon)</p>
-              <code className="text-paradox-lavender font-mono text-sm break-all">{tokenAddress}</code>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+              <div>
+                <p className="text-xs text-slate-500 font-mono mb-1">PDX Contract Address (Polygon)</p>
+                <code className="text-paradox-lavender font-mono text-sm break-all">{tokenAddress}</code>
+              </div>
+              <a href="https://repo.sourcify.dev/137/0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09" target="_blank" rel="noreferrer"
+                className="btn-ghost text-sm whitespace-nowrap flex items-center gap-2 shrink-0">
+                Verify Source <ExternalLink size={14} />
+              </a>
             </div>
-            <a href="https://repo.sourcify.dev/137/0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09" target="_blank" rel="noreferrer"
-              className="btn-ghost text-sm whitespace-nowrap flex items-center gap-2">
-              Verify Source <ExternalLink size={14} />
-            </a>
+            {/* Ownership trust badges */}
+            <div className="border-t border-white/5 pt-3 flex flex-wrap gap-2">
+              <a href="https://polygonscan.com/tx/0x8a8282b7a4e9569e39401bcc9e361f9676eab711bf6ec0a01ae1205143060d65"
+                target="_blank" rel="noreferrer"
+                className="flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/25 text-green-400 hover:brightness-125 transition-all">
+                ✓ Token ownership renounced <ExternalLink size={9} />
+              </a>
+              <a href="https://polygonscan.com/tx/0xe32008e0d8b6a5a23927759ddd63a4630338bea6e3a3fd77e582926f945cba15"
+                target="_blank" rel="noreferrer"
+                className="flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded-lg bg-violet-500/10 border border-violet-500/25 text-violet-400 hover:brightness-125 transition-all">
+                ✓ Protocol → DAO multisig (2-of-2) <ExternalLink size={9} />
+              </a>
+              <a href="https://repo.sourcify.dev/137/0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09"
+                target="_blank" rel="noreferrer"
+                className="flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/25 text-cyan-400 hover:brightness-125 transition-all">
+                ✓ Source verified on Sourcify <ExternalLink size={9} />
+              </a>
+            </div>
           </motion.div>
         )}
 
