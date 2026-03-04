@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { APP_VERSION } from "../version.js";
 
 const TITLES = {
   overview:    { label: "Overview",    icon: "◈" },
@@ -12,6 +13,10 @@ const TITLES = {
 
 export default function PanelWindow({ id, onClose, children }) {
   const meta = TITLES[id] ?? { label: id, icon: "◈" };
+  const scrollRef = useRef(null);
+
+  // Reset scroll to top whenever the panel id changes
+  useEffect(() => { scrollRef.current?.scrollTo(0, 0); }, [id]);
 
   // Close on Escape
   useEffect(() => {
@@ -85,8 +90,18 @@ export default function PanelWindow({ id, onClose, children }) {
         </div>
 
         {/* Scrollable content */}
-        <div className="overflow-y-auto overscroll-contain flex-1 scroll-smooth">
+        <div
+          ref={scrollRef}
+          data-panel="true"
+          className="overflow-y-auto overscroll-contain flex-1 scroll-smooth"
+        >
           {children}
+        </div>
+
+        {/* Slim footer strip */}
+        <div className="shrink-0 flex items-center justify-between px-5 py-2 border-t border-white/5 text-[10px] font-mono text-slate-700">
+          <span>PARADOX v{APP_VERSION} · Polygon Mainnet · Chain ID 137</span>
+          <span className="hidden sm:block">Not financial advice. Experimental protocol.</span>
         </div>
       </motion.div>
     </AnimatePresence>

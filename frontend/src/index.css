@@ -15,6 +15,24 @@
   ::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 3px; }
 }
 
+/* ─── Panel window content overrides ───────────────────────────────────────
+   Sections were designed for full-page scroll (py-24).
+   Inside a panel modal they need tighter vertical breathing room.          */
+[data-panel] section {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+}
+[data-panel] section > .absolute.inset-0 {
+  opacity: 0.35 !important;   /* mute alternating bg blocks inside glass panel */
+}
+[data-panel] .mb-20 { margin-bottom: 2rem; }
+[data-panel] .mb-16 { margin-bottom: 1.5rem; }
+[data-panel] .mb-10 { margin-bottom: 1rem; }
+/* section-to-section dividers replace the big padding gap */
+[data-panel] section + section {
+  border-top: 1px solid rgba(45, 31, 78, 0.4);
+}
+
 @layer components {
   .glass {
     background: rgba(16, 11, 36, 0.6);

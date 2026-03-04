@@ -15,7 +15,6 @@ import TradeLinks           from "./components/TradeLinks.jsx";
 import ShareLinks           from "./components/ShareLinks.jsx";
 import ChatCTA              from "./components/ChatCTA.jsx";
 import Chat                 from "./components/Chat.jsx";
-import Footer               from "./components/Footer.jsx";
 import WhitepaperModal      from "./components/WhitepaperModal.jsx";
 
 export default function App() {
@@ -38,7 +37,6 @@ export default function App() {
         onOpenWhitepaper={() => setWhitepaperOpen(true)}
         onOpenPanel={openPanel}
       />
-      <Footer />
 
       {/* Panel windows float over hero */}
       <AnimatePresence mode="wait">
