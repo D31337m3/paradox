@@ -90,17 +90,6 @@ export default function Hero({ onOpenWhitepaper, onOpenPanel }) {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.9 }}
-          className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8 text-xs font-mono text-purple-300"
-        >
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          Live on Polygon Mainnet
-        </motion.div>
-
         {/* Main title */}
         <motion.h1
           initial={{ opacity: 0, scale: 0.9 }}
