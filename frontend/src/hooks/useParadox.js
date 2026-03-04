@@ -43,6 +43,8 @@ export function useTreasuryBalance() {
   });
   return { balance: data, isLoading };
 }
+
+export function useEpochData() {
   // Batch the first 4 calls into one multicall to reduce RPC round-trips
   const { data: batch, isLoading: epochLoading } = useReadContracts({
     contracts: [
