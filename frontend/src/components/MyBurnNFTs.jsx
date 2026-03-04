@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { formatEther } from "viem";
 import { CONTRACT_ADDRESSES as ADDRESSES } from "../contracts/addresses";
-import NFT_ABI from "../contracts/BurnReputationNFT.json";
+import NFT_ABI_JSON from "../contracts/BurnReputationNFT.json";
+const NFT_ABI = NFT_ABI_JSON.abi ?? NFT_ABI_JSON;
 
 // Contract enum: BRONZE=0, SILVER=1, GOLD=2, DIAMOND=3
 const TIER_NAMES  = ["Bronze", "Silver", "Gold", "Diamond"];
