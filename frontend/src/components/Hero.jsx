@@ -79,7 +79,7 @@ const taglines = [
 
 export default function Hero({ onOpenWhitepaper, onOpenPanel }) {
   return (
-    <section id="top" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+    <section id="top" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-[62px]">
       {/* Background layers */}
       <div className="absolute inset-0 bg-paradox-black" />
       <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-40" />

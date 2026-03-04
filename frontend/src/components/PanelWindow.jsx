@@ -51,8 +51,8 @@ export default function PanelWindow({ id, onClose, children }) {
           "fixed z-[60] flex flex-col",
           "bg-[#0d0d14]/95 border border-white/10 shadow-2xl shadow-black/60",
           // Desktop: centred window with max size
-          "md:top-[80px] md:left-1/2 md:-translate-x-1/2",
-          "md:w-[min(92vw,1100px)] md:max-h-[calc(100vh-100px)]",
+          "md:top-[70px] md:left-1/2 md:-translate-x-1/2",
+          "md:w-[min(92vw,1100px)] md:max-h-[calc(100vh-80px)]",
           "md:rounded-2xl",
           // Mobile: full-width bottom sheet
           "bottom-0 left-0 right-0 max-h-[92vh]",

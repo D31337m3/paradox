@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import Navbar               from "./components/Navbar.jsx";
-import TabBar               from "./components/TabBar.jsx";
 import PanelWindow          from "./components/PanelWindow.jsx";
 import Hero                 from "./components/Hero.jsx";
 import LiveStats            from "./components/LiveStats.jsx";
@@ -33,7 +32,6 @@ export default function App() {
         activeTab={activePanel}
         onTabChange={openPanel}
       />
-      <TabBar active={activePanel} onChange={(id) => setActivePanel(prev => prev === id ? null : id)} />
 
       {/* Hero always rendered as background */}
       <Hero
