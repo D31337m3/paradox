@@ -20,7 +20,7 @@ const metadata = {
   name: "PARADOX",
   description: "A Behavioral Liquidity Experiment on Polygon",
   url: "https://paradox.d31337m3.com",
-  icons: ["https://paradox.d31337m3.com/favicon.ico"],
+  icons: ["https://paradox.d31337m3.com/pdx-token-icon.png"],
 };
 
 const config = createConfig({
