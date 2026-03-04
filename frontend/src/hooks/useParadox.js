@@ -34,30 +34,30 @@ export function useTokenStats() {
   };
 }
 
-export function useEpochData() {
-  const { data: epochData, isLoading: epochLoading } = useReadContract({
-    ...epochContract,
-    functionName: "getCurrentEpoch",
+export function useTreasuryBalance() {
+  const { data, isLoading } = useReadContract({
+    ...tokenContract,
+    functionName: "balanceOf",
+    args: [CONTRACT_ADDRESSES.DAO_TREASURY],
+    query: q(60_000),
+  });
+  return { balance: data, isLoading };
+}
+  // Batch the first 4 calls into one multicall to reduce RPC round-trips
+  const { data: batch, isLoading: epochLoading } = useReadContracts({
+    contracts: [
+      { ...epochContract, functionName: "getCurrentEpoch" },
+      { ...epochContract, functionName: "currentEpochId" },
+      { ...epochContract, functionName: "timeUntilEpochEnd" },
+      { ...epochContract, functionName: "currentEmissionRate" },
+    ],
     query: q(15_000),
   });
 
-  const { data: epochId } = useReadContract({
-    ...epochContract,
-    functionName: "currentEpochId",
-    query: q(15_000),
-  });
-
-  const { data: timeLeft } = useReadContract({
-    ...epochContract,
-    functionName: "timeUntilEpochEnd",
-    query: q(10_000),
-  });
-
-  const { data: emissionRate } = useReadContract({
-    ...epochContract,
-    functionName: "currentEmissionRate",
-    query: q(30_000),
-  });
+  const epochData    = batch?.[0]?.result;
+  const epochId      = batch?.[1]?.result;
+  const timeLeft     = batch?.[2]?.result;
+  const emissionRate = batch?.[3]?.result;
 
   const { data: liveCCI } = useReadContract({
     ...epochContract,

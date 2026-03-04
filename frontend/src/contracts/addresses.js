@@ -6,6 +6,7 @@ export const CONTRACT_ADDRESSES = {
   EpochController:   "0x473a89EB41D3903f56c054Ef0a16fB8594515e53",  // v2
   TokenVesting:      "0x75812E84490a06C5D81B31862c8AF0c5F6b436B7",
   LP_PAIR:           "0x4d35Ee91Cc47e108F9f21a1551345cce93817B9E",
+  DAO_TREASURY:      "0xfed787784C3C3f7101B46f06A847CB5D60Fa6166", // Q2 2026 multisig — hardware activated
   // Legacy v1 — old epoch 0 hoarders can still reclaimTokens() here
   EpochController_v1: "0x1fb3c47c85f65daaF4a48B27E3D9F9dd8607a88e",
   BurnReputationNFT_v1: "0xE6de4639FBaa59C7f24c11f8f078515e449C035F",

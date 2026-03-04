@@ -387,6 +387,27 @@ This seed produces a unique **9-ellipse orbital fingerprint** — a visual repre
 
 The metadata — including name, tier, amount burned, epoch, reputation score, and artwork — is encoded as base64 JSON directly in `tokenURI()`. The NFT will render in any ERC-721-compatible wallet or marketplace without any external dependency.
 
+### 9.5.1 Seasonal Art Themes
+
+NFT artwork is organised into **Seasons** — each Season spans **two consecutive epochs**, giving the collection a living, time-stamped character that reflects the evolving history of the experiment.
+
+| Season | Epochs | Art Direction |
+|--------|--------|---------------|
+| Season 1 | Epochs 1–2 | Genesis — procedurally generated orbital fingerprints (on-chain SVG, deterministic) |
+| Season 2 | Epochs 3–4 | Curated — inaugural commissioned works from selected digital artists |
+| Season 3+ | Epochs 5–6, 7–8, … | Curated — new artist collaborations each season, voted on by DAO |
+
+**Starting with Season 2 (Epoch 3)**, the procedural SVG baseline is replaced by themed artwork created by **invited digital artists**. Each artist produces a base composition for that season; the on-chain burn parameters (token ID, amount burned, tier) are then used to algorithmically vary the composition, ensuring every NFT within a season remains individually unique while sharing a coherent visual identity.
+
+Key properties that are permanent regardless of season:
+
+- NFTs remain **fully on-chain** — artwork is embedded in the token, not linked
+- Each token's uniqueness is still derived from its burn event seed — no two are identical
+- Season and epoch number are stored in metadata and displayed in the NFT's attributes
+- Soulbound status is unaffected — no transfer or sale is ever possible
+
+Artist selection from Season 2 onwards is subject to a governance signal (informal community vote pre-DAO, on-chain DAO vote post-formation).
+
 ### 9.6 Soulbound Mechanism
 
 Transfer, `safeTransferFrom`, and `approve` functions all revert with `"BurnNFT: soulbound"`. The NFT can only exist at the address it was minted to, forever.

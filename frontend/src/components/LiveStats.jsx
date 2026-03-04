@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useTokenStats, useEpochData } from "../hooks/useParadox.js";
+import { useTokenStats, useEpochData, useTreasuryBalance } from "../hooks/useParadox.js";
 import { formatUnits } from "viem";
+import { CONTRACT_ADDRESSES } from "../contracts/addresses.js";
 
 /* ── Animated counter ── */
 function Counter({ value, decimals = 0, suffix = "" }) {
@@ -91,19 +92,23 @@ const fadeUp = {
 export default function LiveStats() {
   const { isDeployed, isLoading: tokenLoading, totalSupply, symbol } = useTokenStats();
   const { isLoading: epochLoading, epoch, epochId, timeLeft, liveCCI } = useEpochData();
+  const { balance: treasuryBalance } = useTreasuryBalance();
 
   const loading = tokenLoading || epochLoading;
 
-  const supplyFmt  = totalSupply ? parseFloat(formatUnits(totalSupply, 18)).toLocaleString() : "1,000,000,000";
-  const lockedFmt  = epoch?.totalLocked  ? parseFloat(formatUnits(epoch.totalLocked,  18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—";
-  const burnedFmt  = epoch?.totalBurned  ? parseFloat(formatUnits(epoch.totalBurned,  18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—";
+  const supplyFmt   = totalSupply ? parseFloat(formatUnits(totalSupply, 18)).toLocaleString() : "1,000,000,000";
+  const lockedFmt   = epoch?.totalLocked  ? parseFloat(formatUnits(epoch.totalLocked,  18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—";
+  const burnedFmt   = epoch?.totalBurned  ? parseFloat(formatUnits(epoch.totalBurned,  18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—";
+  const treasuryFmt = treasuryBalance != null
+    ? parseFloat(formatUnits(treasuryBalance, 18)).toLocaleString(undefined, { maximumFractionDigits: 0 })
+    : "—";
   const cci = liveCCI ?? (epoch?.cci ? Number(epoch.cci) : 0);
 
   const stats = [
-    { label: "Total Supply",      value: "1,000,000,000",   sub: "PDX",   color: "text-purple-300" },
-    { label: "Epoch",             value: epochId != null ? `#${epochId}` : "—", sub: "current",  color: "text-violet-300" },
-    { label: "Locked This Epoch", value: lockedFmt,          sub: "PDX",   color: "text-purple-400" },
-    { label: "Burned This Epoch", value: burnedFmt,          sub: "PDX",   color: "text-pink-400" },
+    { label: "Total Supply",      value: "1,000,000,000", sub: "PDX",         color: "text-purple-300" },
+    { label: "Epoch",             value: epochId != null ? `#${epochId}` : "—", sub: "current",        color: "text-violet-300" },
+    { label: "Locked This Epoch", value: lockedFmt,        sub: "PDX",         color: "text-purple-400" },
+    { label: "Burned This Epoch", value: burnedFmt,        sub: "PDX",         color: "text-pink-400"   },
   ];
 
   return (
