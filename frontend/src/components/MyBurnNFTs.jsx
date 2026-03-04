@@ -5,15 +5,15 @@ import { formatEther } from "viem";
 import { CONTRACT_ADDRESSES as ADDRESSES } from "../contracts/addresses";
 import NFT_ABI from "../contracts/BurnReputationNFT.json";
 
-const TIER_NAMES  = ["None", "Bronze", "Silver", "Gold", "Diamond"];
+// Contract enum: BRONZE=0, SILVER=1, GOLD=2, DIAMOND=3
+const TIER_NAMES  = ["Bronze", "Silver", "Gold", "Diamond"];
 const TIER_COLORS = [
-  "",
   "from-amber-900/40 to-amber-950/30 border-amber-700/40 text-amber-400",
   "from-slate-700/40 to-slate-800/30 border-slate-500/40 text-slate-300",
   "from-yellow-800/40 to-yellow-950/30 border-yellow-600/40 text-yellow-400",
   "from-cyan-800/30 to-cyan-950/30 border-cyan-500/40 text-cyan-300",
 ];
-const TIER_GLOW = ["","shadow-amber-900/40","shadow-slate-700/40","shadow-yellow-900/40","shadow-cyan-900/60"];
+const TIER_GLOW = ["shadow-amber-900/40","shadow-slate-700/40","shadow-yellow-900/40","shadow-cyan-900/60"];
 
 const NFT_ADDR = ADDRESSES.BurnReputationNFT;
 
@@ -52,7 +52,7 @@ export default function MyBurnNFTs() {
         address: NFT_ADDR, abi: NFT_ABI, functionName: "ownerOf", args: [BigInt(i)],
       }))
     : [];
-  const { data: ownerResults } = useReadContracts({
+  const { data: ownerResults, isError: ownerErr, isPending: ownerPending } = useReadContracts({
     contracts: ownerCalls, query: { enabled: ownerCalls.length > 0, staleTime: 0 },
   });
 
@@ -65,27 +65,30 @@ export default function MyBurnNFTs() {
 
   const uriCalls = tokenIds.map(id => ({ address: NFT_ADDR, abi: NFT_ABI, functionName: "tokenURI", args: [id] }));
   const recCalls = tokenIds.map(id => ({ address: NFT_ADDR, abi: NFT_ABI, functionName: "burnRecords", args: [id] }));
-  const { data: uriResults } = useReadContracts({ contracts: uriCalls, query: { enabled: tokenIds.length > 0, staleTime: 0 } });
-  const { data: recResults } = useReadContracts({ contracts: recCalls, query: { enabled: tokenIds.length > 0, staleTime: 0 } });
+  const { data: uriResults, isError: uriErr } = useReadContracts({ contracts: uriCalls, query: { enabled: tokenIds.length > 0, staleTime: 0 } });
+  const { data: recResults, isError: recErr } = useReadContracts({ contracts: recCalls, query: { enabled: tokenIds.length > 0, staleTime: 0 } });
 
   if (!isConnected) return null;
   if (balance !== undefined && balance === 0n) return null;
 
-  const hasError = balanceErr || nextTokenIdErr;
+  const hasError = balanceErr || nextTokenIdErr || ownerErr || uriErr || recErr;
   const isLoading = !hasError && (balance === undefined || nextTokenId === undefined);
-  const isLoadingNFTs = !hasError && hasBal && ownerCalls.length > 0 && !ownerResults;
+  // ownerPending is only true when the call is in flight, not stuck forever
+  const isLoadingNFTs = !hasError && hasBal && ownerCalls.length > 0 && ownerPending && !ownerResults;
 
   const nfts = tokenIds.map((id, i) => {
     const meta = parseTokenURI(uriResults?.[i]?.result);
     const rec  = recResults?.[i]?.result;
+    // rec is array [amountBurned, epochNumber, tier, reputationScore] from viem tuple decode
+    const tierIdx  = rec ? Number(Array.isArray(rec) ? rec[2] : rec.tier) : 0;
     return {
       id: id.toString(),
       image: meta?.image,
       name:  meta?.name ?? `PDX-REP #${id}`,
-      tier:  rec ? Number(rec.tier) : 0,
-      amountBurned: rec ? rec.amountBurned : 0n,
-      epoch: rec ? Number(rec.epochNumber) : 0,
-      score: rec ? Number(rec.reputationScore) : 0,
+      tier:  tierIdx,
+      amountBurned: rec ? (Array.isArray(rec) ? rec[0] : rec.amountBurned) : 0n,
+      epoch: rec ? Number(Array.isArray(rec) ? rec[1] : rec.epochNumber) : 0,
+      score: rec ? Number(Array.isArray(rec) ? rec[3] : rec.reputationScore) : 0,
     };
   });
 
