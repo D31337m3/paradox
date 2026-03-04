@@ -1,0 +1,12 @@
+# NEVER COMMIT THESE
+wallet.txt
+ADDRESSES.txt
+contracts/.env
+frontend/.env*
+
+# Build artifacts
+contracts/artifacts/
+contracts/cache/
+frontend/dist/
+node_modules/
+*/node_modules/

@@ -1,0 +1,10 @@
+Polygonscan verification via Sourcify (paste in browser):
+https://polygonscan.com/verifyContract?a=0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09
+
+Steps:
+1. Open the link above
+2. Select "Via Sourcify" as the verification method
+3. Submit — it will pull from the already-verified Sourcify repo
+
+Sourcify verified source (already live):
+https://repo.sourcify.dev/137/0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09

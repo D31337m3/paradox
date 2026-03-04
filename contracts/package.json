@@ -1,0 +1,29 @@
+{
+  "name": "paradox-contracts",
+  "version": "1.0.0",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:polygon": "hardhat run scripts/deploy.js --network polygon",
+    "deploy:mumbai": "hardhat run scripts/deploy.js --network mumbai",
+    "recover:polygon": "hardhat run scripts/recover-deploy.js --network polygon",
+    "watch-deploy": "node scripts/watch-and-deploy.js",
+    "verify:sourcify": "hardhat run scripts/verify-sourcify.js --network polygon",
+    "add-liquidity": "node scripts/add-liquidity.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "hh2",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.12",
+    "chai": "^4.5.0",
+    "ethers": "^6.13.4",
+    "hardhat": "^2.22.17",
+    "hardhat-gas-reporter": "^1.0.10",
+    "solidity-coverage": "^0.8.13"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.2.0",
+    "dotenv": "^16.4.7"
+  }
+}

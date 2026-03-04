@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: #030309;
+    color: #f1f5f9;
+    font-family: "Inter", system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0a0715; }
+  ::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 3px; }
+}
+
+@layer components {
+  .glass {
+    background: rgba(16, 11, 36, 0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(45, 31, 78, 0.8);
+  }
+  .glow-purple { box-shadow: 0 0 30px rgba(139, 92, 246, 0.4); }
+  .glow-pink   { box-shadow: 0 0 30px rgba(236, 72, 153, 0.4); }
+  .text-glow   { text-shadow: 0 0 40px rgba(139, 92, 246, 0.8); }
+  .text-glow-pink { text-shadow: 0 0 40px rgba(232, 121, 249, 0.8); }
+  .btn-primary {
+    @apply px-8 py-3 rounded-xl font-semibold text-white transition-all duration-300
+           bg-gradient-to-r from-violet-600 to-purple-500
+           hover:from-violet-500 hover:to-purple-400
+           hover:shadow-[0_0_30px_rgba(139,92,246,0.6)]
+           active:scale-95;
+  }
+  .btn-ghost {
+    @apply px-8 py-3 rounded-xl font-semibold text-purple-300 transition-all duration-300
+           border border-purple-700/50 hover:border-purple-500
+           hover:text-white hover:bg-purple-900/30
+           active:scale-95;
+  }
+  .stat-card {
+    @apply glass rounded-2xl p-6 flex flex-col gap-2 hover:border-purple-600/50 transition-all duration-300;
+  }
+  .choice-card {
+    @apply glass rounded-2xl p-6 flex flex-col gap-3 cursor-pointer transition-all duration-300
+           hover:scale-[1.02] hover:border-purple-500/60;
+  }
+}
