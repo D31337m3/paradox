@@ -77,7 +77,7 @@ const taglines = [
   "PARADOX makes belief measurable.",
 ];
 
-export default function Hero({ onOpenWhitepaper }) {
+export default function Hero({ onOpenWhitepaper, onOpenPanel }) {
   return (
     <section id="top" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Background layers */}
@@ -138,9 +138,9 @@ export default function Hero({ onOpenWhitepaper }) {
           transition={{ delay: 2.8, duration: 0.8 }}
           className="flex flex-wrap items-center justify-center gap-4"
         >
-          <a href="#trade" className="btn-primary">Trade PDX</a>
-          <a href="#epochs" className="btn-ghost">How Epochs Work</a>
-          <a href="#manifesto" className="btn-ghost">Read Manifesto</a>
+          <button onClick={() => onOpenPanel?.("trade")} className="btn-primary">Trade PDX</button>
+          <button onClick={() => onOpenPanel?.("participate")} className="btn-ghost">How Epochs Work</button>
+          <button onClick={() => onOpenPanel?.("overview")} className="btn-ghost">Read Manifesto</button>
           <button
             onClick={onOpenWhitepaper}
             className="flex items-center gap-2 text-sm font-mono text-pink-400 hover:text-pink-300 glass rounded-xl px-5 py-2.5 border border-pink-900/40 hover:border-pink-600/60 transition-all"
@@ -157,32 +157,18 @@ export default function Hero({ onOpenWhitepaper }) {
           className="mt-20 grid grid-cols-3 gap-4 max-w-lg mx-auto"
         >
           {[
-            { label: "HOARD", color: "text-purple-400", icon: "🔒", hover: "hover:border-violet-500 hover:bg-violet-500/10" },
-            { label: "BURN",  color: "text-pink-400",   icon: "🔥", hover: "hover:border-pink-500 hover:bg-pink-500/10" },
-            { label: "EXIT",  color: "text-cyan-400",   icon: "🌊", hover: "hover:border-cyan-500 hover:bg-cyan-500/10" },
+            { label: "HOARD", color: "text-purple-400", icon: "🔒", hover: "hover:border-violet-500 hover:bg-violet-500/10", panel: "participate" },
+            { label: "BURN",  color: "text-pink-400",   icon: "🔥", hover: "hover:border-pink-500 hover:bg-pink-500/10",   panel: "participate" },
+            { label: "EXIT",  color: "text-cyan-400",   icon: "🌊", hover: "hover:border-cyan-500 hover:bg-cyan-500/10",   panel: "participate" },
           ].map(p => (
-            <a key={p.label} href="#declare" className={`glass rounded-xl p-4 text-center border border-white/5 transition-all duration-200 cursor-pointer ${p.hover}`}>
+            <button key={p.label} onClick={() => onOpenPanel?.(p.panel)}
+              className={`glass rounded-xl p-4 text-center border border-white/5 transition-all duration-200 cursor-pointer ${p.hover}`}>
               <div className="text-2xl mb-1">{p.icon}</div>
               <div className={`text-xs font-mono font-bold tracking-widest ${p.color}`}>{p.label}</div>
-            </a>
+            </button>
           ))}
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 4.5, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500"
-      >
-        <span className="text-xs font-mono tracking-widest uppercase">Scroll</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-          className="w-px h-8 bg-gradient-to-b from-purple-500 to-transparent"
-        />
-      </motion.div>
     </section>
   );
 }

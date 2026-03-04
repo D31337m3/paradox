@@ -12,19 +12,19 @@ export { TABS };
 
 export default function TabBar({ active, onChange }) {
   return (
-    <div className="sticky top-[65px] z-40 glass border-b border-paradox-border">
+    <div className="fixed top-[65px] left-0 right-0 z-40 glass border-b border-paradox-border">
       <div className="max-w-7xl mx-auto px-4 flex items-center gap-1 overflow-x-auto scrollbar-hide">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className={`relative flex items-center gap-2 px-5 py-3.5 text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+            className={`relative flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
               active === tab.id
                 ? "text-white"
                 : "text-slate-500 hover:text-slate-300"
             }`}
           >
-            <span className="text-base leading-none">{tab.icon}</span>
+            <span className="hidden sm:inline text-base leading-none">{tab.icon}</span>
             {tab.label}
             {active === tab.id && (
               <motion.div
