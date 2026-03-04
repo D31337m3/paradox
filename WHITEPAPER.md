@@ -414,7 +414,7 @@ There is no mint function. There is no owner privilege to create new tokens. The
 | Fair launch liquidity | 500,000,000 | 50% | QuickSwap LP pair `0x4d35Ee...` |
 | Epoch reward reserve | 200,000,000 | 20% | Held by Epoch Controller, emissions only |
 | Developer allocation | 150,000,000 | 15% | 24-month linear vesting, `0x75812E...` |
-| DAO treasury | 100,000,000 | 10% | Multi-sig, governance-controlled |
+| DAO treasury | 100,000,000 | 10% | Multi-sig, governance-controlled — hardware wallets activated, pending DAO formation |
 | Ecosystem grants | 50,000,000 | 5% | Experiment funding, partnerships |
 
 ### 10.3 No Hidden Mechanics
@@ -469,6 +469,113 @@ The following protocol parameters are subject to governance vote:
 ### 11.3 Governance Philosophy
 
 PARADOX governance is intentionally designed to resist plutocracy. Whales can accumulate tokens, but they cannot accumulate reputation without sacrifice. A governance proposal to enrich early insiders would require the same insiders to have repeatedly burned tokens — self-defeating for extractors, self-reinforcing for true believers.
+
+### 11.4 DAO Treasury Status
+
+The PARADOX DAO treasury hardware wallets have been generated and activated ahead of formal DAO launch. All DAO/governance-controlled tokens (100,000,000 PDX — 10% of total supply) are staged and ready for transfer to the multi-sig treasury upon DAO formation.
+
+> **Status:** Treasury wallets activated (hardware). Transfer of governance-controlled tokens is pending formal DAO formation, targeted for **Q2 2026**. No governance-controlled tokens will be moved, spent, or delegated prior to the first ratified DAO vote.
+
+### 11.5 Terms for Formation of the Official PARADOX Governing DAO
+
+This section defines the binding conditions, eligibility requirements, and procedural terms under which the PARADOX DAO may be formally constituted. These terms are established in advance of formation to ensure the process is transparent, tamper-resistant, and community-driven.
+
+---
+
+#### 11.5.1 Formation Trigger Conditions
+
+The DAO formation process may be initiated when **all** of the following conditions are met:
+
+| Condition | Requirement |
+|-----------|-------------|
+| Protocol maturity | At least **3 completed epochs** on Polygon mainnet |
+| Participant threshold | At least **50 unique wallet addresses** have burned PDX across at least 2 epochs |
+| Reputation distribution | At least **10 distinct wallets** hold a Burn Reputation NFT of Silver tier or higher |
+| Community signal | A formation proposal receives **≥ 66% approval** in a Snapshot off-chain vote open for no fewer than 7 days |
+| Treasury readiness | DAO treasury hardware multisig wallets confirmed operational (✅ completed — Q1 2026) |
+
+No single party, including the protocol deployer, may unilaterally declare DAO formation. All conditions above must be verifiably satisfied before the formation process opens.
+
+---
+
+#### 11.5.2 Founding Member Eligibility
+
+A wallet is eligible to participate as a **Founding Member** of the PARADOX DAO if, at the time of the formation snapshot:
+
+- It holds a valid Burn Reputation NFT (any tier) minted prior to the formation proposal
+- It has participated in at least **1 epoch** as a BURN or HOARD declarant
+- It has **not** been flagged by governance for exploit, manipulation, or Sybil activity
+
+Founding Members receive no special financial privileges. Their only distinction is eligibility to vote in the formation election and to stand for initial council seats.
+
+---
+
+#### 11.5.3 Initial Governance Council
+
+Upon formation, an **Initial Governance Council** of **5 seats** shall be elected by Founding Members via a ranked-choice Snapshot vote:
+
+- Each Founding Member wallet casts votes weighted by `tokenBalance + reputationScore` (consistent with the protocol's governance formula)
+- Council terms last **one full epoch cycle** (approximately 30 days) before the first open election
+- The council's sole mandate during this initial term is to:
+  1. Ratify the DAO charter
+  2. Approve and execute the transfer of DAO treasury tokens from staged wallets to the multisig
+  3. Schedule the first open governance vote on epoch parameters
+
+The deployer wallet (`0x53201fFB7E6FA79CE2D48C082260cA42fE04Be13`) may not hold a council seat during the initial term but retains emergency-pause authority over contracts until the first governance vote explicitly transfers or revokes it.
+
+---
+
+#### 11.5.4 DAO Charter Requirements
+
+The DAO charter, to be ratified by the Initial Governance Council, must include at minimum:
+
+1. **Mission statement** — restating the core PARADOX behavioral experiment thesis
+2. **Treasury management policy** — rules governing spending, grants, and investment of DAO funds; no expenditure exceeding 1% of treasury value without a full governance vote
+3. **Proposal process** — minimum token balance to submit a proposal, voting period (minimum 5 days), quorum requirement (minimum 10% of circulating supply participating)
+4. **Amendment procedure** — changes to the charter require ≥ 75% supermajority
+5. **Conflict of interest policy** — council members must publicly disclose PDX holdings and recuse from votes where a direct financial conflict exists
+6. **Dissolution clause** — protocol can only be deprecated by ≥ 80% vote with 14-day notice period
+
+---
+
+#### 11.5.5 Treasury Transfer Terms
+
+Upon charter ratification, the Initial Governance Council shall execute the following in a single atomic sequence:
+
+1. Verify both hardware treasury wallet addresses are live and accessible to at least 2 of 2 signers
+2. Transfer **100,000,000 PDX** from the deployer-controlled treasury allocation to the DAO multisig
+3. Publish the transfer transaction hash on-chain and in the DAO forum
+4. Renounce the deployer's direct authority over the treasury allocation
+
+No partial transfers. The full 10% allocation moves in one transaction or not at all.
+
+---
+
+#### 11.5.6 Anti-Capture Provisions
+
+The following protections are permanently enshrined and cannot be overridden by any governance vote without the supermajority and time-lock specified:
+
+| Provision | Rule | Override Threshold |
+|-----------|------|--------------------|
+| No treasury drain | No single vote may authorize spending > 10% of treasury in 30 days | 80% + 14-day timelock |
+| No insider enrichment | Proposals that directly benefit council members' own wallets are void | Non-overridable |
+| No supply manipulation | Governance cannot mint new PDX or modify the 1B fixed supply | Non-overridable |
+| Burn mechanics protection | The core BURN/HOARD/RESET cycle cannot be disabled | 75% + 30-day timelock |
+| Soulbound NFTs | Burn Reputation NFTs remain non-transferable in perpetuity | Non-overridable |
+
+---
+
+#### 11.5.7 Target Timeline
+
+| Milestone | Target |
+|-----------|--------|
+| Treasury hardware wallets activated | ✅ Q1 2026 (complete) |
+| Formation trigger conditions met | Q2 2026 |
+| Snapshot formation vote | Q2 2026 |
+| Founding member election | Q2 2026 |
+| Charter ratification | Q2 2026 |
+| Treasury token transfer | Q2 2026 (immediately post-ratification) |
+| First open governance vote | Q3 2026 |
 
 ---
 
@@ -649,7 +756,8 @@ Regulatory frameworks for DeFi tokens vary by jurisdiction and are evolving rapi
 ### Phase 3 — Governance (Q2 2026)
 - [ ] Snapshot-compatible governance integration
 - [ ] On-chain proposal and voting module
-- [ ] DAO treasury multisig established
+- [x] DAO treasury hardware wallets activated and ready — all DAO/governance-controlled tokens staged for transfer upon DAO formation
+- [ ] DAO formation and formal governance launch (Q2 2026)
 - [ ] First governance vote: epoch parameters review
 
 ### Phase 4 — Expansion (Q3 2026)
