@@ -1,5 +1,57 @@
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+/* ── Typewriter viral question rotator ── */
+const QUESTIONS = [
+  "If everyone knows a token is worthless…\ncan belief still make it valuable?",
+  "What if the act of burning\nwas more valuable than holding?",
+  "Can a market measure conviction\nbetter than any institution?",
+  "What does it mean to sacrifice\nin a system built on exit?",
+];
+
+function ViralQuestion() {
+  const [idx, setIdx] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [typing, setTyping] = useState(true);
+
+  useEffect(() => {
+    const full = QUESTIONS[idx];
+    if (typing) {
+      if (displayed.length < full.length) {
+        const t = setTimeout(() => setDisplayed(full.slice(0, displayed.length + 1)), 28);
+        return () => clearTimeout(t);
+      } else {
+        // Pause then erase
+        const t = setTimeout(() => setTyping(false), 2800);
+        return () => clearTimeout(t);
+      }
+    } else {
+      if (displayed.length > 0) {
+        const t = setTimeout(() => setDisplayed(d => d.slice(0, -1)), 12);
+        return () => clearTimeout(t);
+      } else {
+        setIdx(i => (i + 1) % QUESTIONS.length);
+        setTyping(true);
+      }
+    }
+  }, [displayed, typing, idx]);
+
+  const lines = displayed.split("\n");
+  return (
+    <div className="text-center min-h-[3.5rem] flex flex-col items-center justify-center mb-8">
+      {lines.map((line, i) => (
+        <p key={i} className={`font-light leading-relaxed ${
+          i === 0 ? "text-slate-300 text-base md:text-lg" : "text-paradox-magenta text-base md:text-lg font-medium"
+        }`}>
+          {line}
+          {i === lines.length - 1 && (
+            <span className="inline-block w-[2px] h-[1em] bg-paradox-magenta ml-[2px] align-middle animate-pulse" />
+          )}
+        </p>
+      ))}
+    </div>
+  );
+}
 
 /* ── Particle canvas ── */
 function Particles() {
@@ -70,11 +122,9 @@ function Particles() {
   return <canvas ref={ref} className="absolute inset-0 pointer-events-none" />;
 }
 
-const words = ["PARADOX"];
 const taglines = [
-  "A Behavioral Liquidity Experiment.",
-  "Markets are belief engines.",
-  "PARADOX makes belief measurable.",
+  "The Market That Knows It's A Market.",
+  "Belief, measured. Conviction, on-chain.",
 ];
 
 export default function Hero({ onOpenWhitepaper, onOpenPanel }) {
@@ -104,21 +154,32 @@ export default function Hero({ onOpenWhitepaper, onOpenPanel }) {
         </motion.h1>
 
         {/* Taglines */}
-        <div className="flex flex-col gap-1 mb-10">
+        <div className="flex flex-col gap-1 mb-6">
           {taglines.map((line, i) => (
             <motion.p
               key={i}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.6 + i * 0.25, duration: 0.8 }}
-              className={`text-lg md:text-xl font-light ${
-                i === 0 ? "text-slate-200" : i === 1 ? "text-purple-300" : "text-purple-200"
+              className={`font-light ${
+                i === 0
+                  ? "text-xl md:text-2xl text-slate-200 font-medium tracking-tight"
+                  : "text-sm md:text-base text-purple-400 font-mono tracking-widest uppercase"
               }`}
             >
               {line}
             </motion.p>
           ))}
         </div>
+
+        {/* Viral rotating question */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.4, duration: 1.0 }}
+        >
+          <ViralQuestion />
+        </motion.div>
 
         {/* CTA buttons */}
         <motion.div

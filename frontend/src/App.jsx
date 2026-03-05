@@ -16,6 +16,7 @@ import ShareLinks           from "./components/ShareLinks.jsx";
 import ChatCTA              from "./components/ChatCTA.jsx";
 import Chat                 from "./components/Chat.jsx";
 import SecurityStatus       from "./components/SecurityStatus.jsx";
+import BeliefMetrics        from "./components/BeliefMetrics.jsx";
 import WhitepaperModal      from "./components/WhitepaperModal.jsx";
 
 export default function App() {
@@ -44,6 +45,7 @@ export default function App() {
         {activePanel === "overview" && (
           <PanelWindow key="overview" id="overview" onClose={closePanel}>
             <LiveStats />
+            <BeliefMetrics />
             <SecurityStatus />
             <Manifesto />
           </PanelWindow>

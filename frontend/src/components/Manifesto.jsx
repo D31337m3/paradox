@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 
 const quotes = [
+  { text: "PARADOX is the market\nthat knows it's a market.", highlight: "knows it's a market" },
   { text: "Most tokens reward extraction.\nPARADOX rewards declaration.", highlight: "declaration" },
-  { text: "Markets are belief engines.\nPARADOX makes belief measurable.", highlight: "measurable" },
-  { text: "Value does not emerge from hype.\nIt emerges from coordinated belief under constraint.", highlight: "constraint" },
   { text: "Reputation cannot be purchased.\nOnly earned through destruction.\nThat is the paradox.", highlight: "paradox" },
+  { text: "Value does not emerge from hype.\nIt emerges from coordinated belief under constraint.", highlight: "constraint" },
 ];
 
 const tenets = [
