@@ -7,6 +7,12 @@ const QUESTIONS = [
   "What if the act of burning\nwas more valuable than holding?",
   "Can a market measure conviction\nbetter than any institution?",
   "What does it mean to sacrifice\nin a system built on exit?",
+  "What if scarcity wasn't manufactured…\nbut declared?",
+  "The protocol doesn't promise returns.\nIt asks what you're willing to lose.",
+  "In a world of infinite tokens,\nwhat makes one worth keeping?",
+  "Hoard. Burn. Exit.\nWhich one are you?",
+  "Every sell tells a story.\nSo does every burn.",
+  "Price is what you pay.\nConviction is what you prove.",
 ];
 
 function ViralQuestion() {
