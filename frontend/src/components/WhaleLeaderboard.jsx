@@ -31,10 +31,10 @@ const PROTOCOL = [
   {
     addr:  "0x1fb3c47c85f65daaF4a48B27E3D9F9dd8607a88e",
     label: "Epoch Controller v1",
-    role:  "Legacy — Epoch 0 active until ~April 1 2026",
-    desc:  "200M PDX hoarded by participants — fully reclaimable after epoch ends. ~198M PDX reserve pool drains via future epoch emissions. Deployer-owned; no rescue function exists.",
-    icon:  "🕰️", color: "text-amber-400", dot: "bg-amber-500",
-    badge: { text: "Live Epoch", style: "bg-amber-500/10 text-amber-400 border-amber-500/30" },
+    role:  "Epoch 0 (Beta) — Liquidity pool funding for next epoch",
+    desc:  "Epoch 0 is the initial beta run of the PARADOX protocol — live until ~April 1 2026. The PDX reserve held here is earmarked as liquidity pool funding for the next epoch launch, seeding the trading pool and reward pool to ensure deep liquidity from day one.",
+    icon:  "🌊", color: "text-cyan-400", dot: "bg-cyan-500",
+    badge: { text: "Epoch 0 Beta", style: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30" },
     link:  "https://polygonscan.com/address/0x1fb3c47c85f65daaF4a48B27E3D9F9dd8607a88e",
   },
   {
