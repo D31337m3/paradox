@@ -51,6 +51,20 @@ const SYSTEM_ADDRESSES = {
     color: "text-slate-400",
     link:  "https://polygonscan.com/address/0x8731492605bf43D9fBe35dF02560ffE4e0B61589",
   },
+  "0x4d35ee91cc47e108f9f21a1551345cce93817b9e": {
+    label: "QuickSwap LP Pool",
+    desc:  "PDX/WMATIC liquidity pool on QuickSwap. Holds pooled PDX + WMATIC for DEX trading. LP tokens are freely tradeable.",
+    icon:  "💧",
+    color: "text-cyan-400",
+    link:  "https://polygonscan.com/address/0x4d35ee91cc47e108f9f21a1551345cce93817b9e",
+  },
+  "0x1fb3c47c85f65daaf4a48b27e3d9f9dd8607a88e": {
+    label: "Epoch Controller v1 — Active",
+    desc:  "Legacy v1 epoch contract. Epoch 0 active until ~April 1 2026. 200M PDX hoarded by participants (reclaimable after epoch ends). ~198M PDX reserve pool. Deployer-owned.",
+    icon:  "🕰️",
+    color: "text-amber-400",
+    link:  "https://polygonscan.com/address/0x1fb3c47c85f65daaF4a48B27E3D9F9dd8607a88e",
+  },
   "0x4f70e7790804a47590dcdb4d3a3c4ecd8c529d09": {
     label: "PDX Token Contract",
     desc:  "The token itself. Any balance here would be unowned — ownership was renounced. address(0) is owner.",
