@@ -62,6 +62,78 @@ const SYSTEM_ADDRESSES = {
 
 const SYSTEM_ADDR_SET = new Set(Object.keys(SYSTEM_ADDRESSES));
 
+const RPC_URL = import.meta.env.VITE_POLYGON_RPC_URL ?? "https://polygon-rpc.com";
+
+/* ── Fetch all PDX holders via Alchemy transfers → balances ──────────────── */
+async function fetchHolders() {
+  // Step 1: collect unique addresses from transfer history
+  const xferRes = await fetch(RPC_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0", id: 1,
+      method: "alchemy_getAssetTransfers",
+      params: [{
+        fromBlock: "0x0", toBlock: "latest",
+        contractAddresses: [PDX_ADDRESS],
+        category: ["erc20"],
+        withMetadata: false,
+        excludeZeroValue: true,
+        maxCount: "0x3e8",
+        order: "desc",
+      }],
+    }),
+  });
+  const xferJson = await xferRes.json();
+  const transfers = xferJson?.result?.transfers ?? [];
+
+  const addrSet = new Set();
+  for (const t of transfers) {
+    if (t.to)   addrSet.add(t.to.toLowerCase());
+    if (t.from) addrSet.add(t.from.toLowerCase());
+  }
+  const addrs = [...addrSet];
+
+  if (addrs.length === 0) return [];
+
+  // Step 2: multicall balanceOf for every address
+  const balSig = "0x70a08231"; // balanceOf(address)
+  const calls = addrs.map((addr, i) => ({
+    jsonrpc: "2.0", id: i + 2,
+    method: "eth_call",
+    params: [{
+      to: PDX_ADDRESS,
+      data: balSig + addr.slice(2).padStart(64, "0"),
+    }, "latest"],
+  }));
+
+  // Batch in chunks of 50
+  const CHUNK = 50;
+  const results = [];
+  for (let i = 0; i < calls.length; i += CHUNK) {
+    const chunk = calls.slice(i, i + CHUNK);
+    const res = await fetch(RPC_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(chunk),
+    });
+    const batch = await res.json();
+    results.push(...(Array.isArray(batch) ? batch : [batch]));
+  }
+
+  // Step 3: map results → holders, filter zero balances, sort desc
+  const holders = addrs
+    .map((addr, i) => {
+      const hex = results.find(r => r.id === i + 2)?.result ?? "0x0";
+      const balance = BigInt(hex || "0x0");
+      return { TokenHolderAddress: addr, balance };
+    })
+    .filter(h => h.balance > 0n)
+    .sort((a, b) => (a.balance > b.balance ? -1 : 1));
+
+  return holders;
+}
+
 function useTopHolders() {
   const [holders, setHolders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,19 +141,8 @@ function useTopHolders() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(
-      `https://api.polygonscan.com/api?module=token&action=tokenholderlist` +
-      `&contractaddress=${PDX_ADDRESS}&page=1&offset=50`
-    )
-      .then(r => r.json())
-      .then(j => {
-        if (j.status !== "1" || !Array.isArray(j.result)) {
-          setError("Holder data unavailable");
-          return;
-        }
-        // Keep ALL addresses — system ones get special rendering
-        setHolders(j.result.slice(0, 25));
-      })
+    fetchHolders()
+      .then(h => setHolders(h))
       .catch(() => setError("Could not fetch holder data"))
       .finally(() => setLoading(false));
   }, []);
@@ -102,8 +163,8 @@ function shortenAddr(addr) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
 
-function formatBalance(raw) {
-  const n = Number(raw) / 1e18;
+function formatBalance(balance) {
+  const n = Number(balance) / 1e18;
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`;
   if (n >= 1_000)     return `${(n / 1_000).toFixed(1)}K`;
   return n.toFixed(2);
@@ -183,7 +244,7 @@ export default function WhaleLeaderboard() {
                   {holders.map((h, i) => {
                     const addrLower = h.TokenHolderAddress.toLowerCase();
                     const sys    = SYSTEM_ADDRESSES[addrLower];
-                    const bal    = Number(h.TokenHolderQuantity) / 1e18;
+                    const bal    = Number(h.balance) / 1e18;
                     const pct    = supplyNum > 0 ? (bal / supplyNum) * 100 : 0;
                     const rank   = i + 1;
                     const isTop3 = !sys && rank <= 3;
@@ -235,7 +296,7 @@ export default function WhaleLeaderboard() {
                           </span>
                         </td>
                         <td className="py-3 px-4 text-right font-mono text-white text-xs">
-                          {formatBalance(h.TokenHolderQuantity)}
+                          {formatBalance(h.balance)}
                         </td>
                         <td className="py-3 px-4 text-right">
                           <div className="flex items-center justify-end gap-2">
