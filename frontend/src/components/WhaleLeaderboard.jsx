@@ -1,20 +1,66 @@
 /**
  * WhaleLeaderboard — Top token holders with conviction tiers
  * Gamified ranking: Architect, Apostle, Believer, Speculator, Ghost
+ * System addresses shown with descriptions for full transparency
  */
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTokenStats } from "../hooks/useParadox.js";
 
 const PDX_ADDRESS = "0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09";
-const EXCLUDED = new Set([
-  "0x0000000000000000000000000000000000000000",
-  "0x000000000000000000000000000000000000dead",
-  // EpochController (locked tokens held here)
-  "0x473a89eb41d3903f56c054ef0a16fb8594515e53",
-  // DAO Treasury
-  "0xfed787784c3c3f7101b46f06a847cb5d60fa6166",
-]);
+
+/* ── Known system / contract addresses with descriptions ─────────────────── */
+const SYSTEM_ADDRESSES = {
+  "0x0000000000000000000000000000000000000000": {
+    label: "Null Address",
+    desc:  "The void. Tokens sent here are permanently destroyed.",
+    icon:  "⚫",
+    color: "text-slate-500",
+  },
+  "0x000000000000000000000000000000000000dead": {
+    label: "Burn Address",
+    desc:  "Standard EVM burn sink. Tokens sent here are unrecoverable.",
+    icon:  "💀",
+    color: "text-red-400",
+  },
+  "0x473a89eb41d3903f56c054ef0a16fb8594515e53": {
+    label: "Epoch Controller v2",
+    desc:  "Protocol contract. Holds tokens locked by believers during active epochs. Owned by DAO multisig.",
+    icon:  "⚙️",
+    color: "text-sky-400",
+    link:  "https://polygonscan.com/address/0x473a89EB41D3903f56c054Ef0a16fB8594515e53",
+  },
+  "0xfed787784c3c3f7101b46f06a847cb5d60fa6166": {
+    label: "DAO Treasury Multisig",
+    desc:  "2-of-2 hardware Safe. Controls protocol upgrades and epoch parameters. No single key can act alone.",
+    icon:  "🏛️",
+    color: "text-emerald-400",
+    link:  "https://polygonscan.com/address/0xfed787784C3C3f7101B46f06A847CB5D60Fa6166",
+  },
+  "0x75812e84490a06c5d81b31862c8af0c5f6b436b7": {
+    label: "Token Vesting Contract",
+    desc:  "Linear vesting schedule for team allocations. Time-locked and non-transferable until cliff.",
+    icon:  "⏳",
+    color: "text-amber-400",
+    link:  "https://polygonscan.com/address/0x75812E84490a06C5D81B31862c8AF0c5F6b436B7",
+  },
+  "0x8731492605bf43d9fbe35df02560ffe4e0b61589": {
+    label: "ParadoxLog Contract",
+    desc:  "On-chain event log. Immutable record of all epoch transitions and governance actions.",
+    icon:  "📋",
+    color: "text-slate-400",
+    link:  "https://polygonscan.com/address/0x8731492605bf43D9fBe35dF02560ffE4e0B61589",
+  },
+  "0x4f70e7790804a47590dcdb4d3a3c4ecd8c529d09": {
+    label: "PDX Token Contract",
+    desc:  "The token itself. Any balance here would be unowned — ownership was renounced. address(0) is owner.",
+    icon:  "🪙",
+    color: "text-paradox-lavender",
+    link:  "https://polygonscan.com/address/0x4F70E7790804A47590DCDB4d3A3C4Ecd8c529d09",
+  },
+};
+
+const SYSTEM_ADDR_SET = new Set(Object.keys(SYSTEM_ADDRESSES));
 
 function useTopHolders() {
   const [holders, setHolders] = useState([]);
@@ -33,10 +79,8 @@ function useTopHolders() {
           setError("Holder data unavailable");
           return;
         }
-        const filtered = j.result
-          .filter(h => !EXCLUDED.has(h.TokenHolderAddress.toLowerCase()))
-          .slice(0, 20);
-        setHolders(filtered);
+        // Keep ALL addresses — system ones get special rendering
+        setHolders(j.result.slice(0, 25));
       })
       .catch(() => setError("Could not fetch holder data"))
       .finally(() => setLoading(false));
@@ -86,7 +130,7 @@ export default function WhaleLeaderboard() {
             Whale <span className="text-paradox-lavender">Leaderboard</span>
           </h2>
           <p className="text-slate-400 text-sm mt-1 max-w-xl">
-            The top holders. No hidden hands. Every wallet visible on-chain.
+            The top holders — wallets and protocol contracts alike. Full transparency, no hidden hands.
           </p>
         </motion.div>
 
@@ -98,6 +142,7 @@ export default function WhaleLeaderboard() {
             { label: "Believer",   icon: "🔥", color: "text-sky-400"    },
             { label: "Speculator", icon: "👁", color: "text-slate-300"  },
             { label: "Ghost",      icon: "👻", color: "text-slate-500"  },
+            { label: "Protocol",   icon: "⚙️", color: "text-purple-400" },
           ].map(r => (
             <span key={r.label} className={`text-[11px] font-mono ${r.color} glass px-2 py-1 rounded-md`}>
               {r.icon} {r.label}
@@ -136,11 +181,16 @@ export default function WhaleLeaderboard() {
                 </thead>
                 <tbody>
                   {holders.map((h, i) => {
+                    const addrLower = h.TokenHolderAddress.toLowerCase();
+                    const sys    = SYSTEM_ADDRESSES[addrLower];
                     const bal    = Number(h.TokenHolderQuantity) / 1e18;
                     const pct    = supplyNum > 0 ? (bal / supplyNum) * 100 : 0;
                     const rank   = i + 1;
-                    const rl     = getRankLabel(rank, pct);
-                    const isTop3 = rank <= 3;
+                    const isTop3 = !sys && rank <= 3;
+                    const rl     = sys
+                      ? { label: sys.label, color: sys.color, icon: sys.icon }
+                      : getRankLabel(rank, pct);
+
                     return (
                       <motion.tr
                         key={h.TokenHolderAddress}
@@ -148,7 +198,9 @@ export default function WhaleLeaderboard() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: i * 0.03 }}
-                        className={`border-b border-white/3 hover:bg-white/3 transition-colors ${isTop3 ? "bg-amber-500/3" : ""}`}
+                        className={`border-b border-white/3 hover:bg-white/3 transition-colors
+                          ${isTop3 ? "bg-amber-500/3" : ""}
+                          ${sys ? "bg-purple-900/10" : ""}`}
                       >
                         <td className="py-3 px-4">
                           <span className={`font-black font-mono text-lg ${isTop3 ? "text-amber-400" : "text-slate-500"}`}>
@@ -156,13 +208,26 @@ export default function WhaleLeaderboard() {
                           </span>
                         </td>
                         <td className="py-3 px-4">
-                          <a
-                            href={`https://polygonscan.com/address/${h.TokenHolderAddress}`}
-                            target="_blank" rel="noopener noreferrer"
-                            className="font-mono text-slate-300 hover:text-white transition-colors text-xs"
-                          >
-                            {shortenAddr(h.TokenHolderAddress)}
-                          </a>
+                          {sys ? (
+                            <div>
+                              <a
+                                href={sys.link ?? `https://polygonscan.com/address/${h.TokenHolderAddress}`}
+                                target="_blank" rel="noopener noreferrer"
+                                className={`font-mono text-xs font-bold ${sys.color} hover:opacity-80 transition-opacity`}
+                              >
+                                {shortenAddr(h.TokenHolderAddress)}
+                              </a>
+                              <p className="text-[10px] text-slate-500 mt-0.5 max-w-xs leading-tight">{sys.desc}</p>
+                            </div>
+                          ) : (
+                            <a
+                              href={`https://polygonscan.com/address/${h.TokenHolderAddress}`}
+                              target="_blank" rel="noopener noreferrer"
+                              className="font-mono text-slate-300 hover:text-white transition-colors text-xs"
+                            >
+                              {shortenAddr(h.TokenHolderAddress)}
+                            </a>
+                          )}
                         </td>
                         <td className="py-3 px-4 hidden sm:table-cell">
                           <span className={`text-xs font-mono ${rl.color} flex items-center gap-1`}>
@@ -176,7 +241,7 @@ export default function WhaleLeaderboard() {
                           <div className="flex items-center justify-end gap-2">
                             <div className="w-16 h-1.5 bg-white/5 rounded-full overflow-hidden hidden sm:block">
                               <div
-                                className={`h-full ${isTop3 ? "bg-amber-500" : "bg-violet-500"} rounded-full`}
+                                className={`h-full ${isTop3 ? "bg-amber-500" : sys ? "bg-purple-500" : "bg-violet-500"} rounded-full`}
                                 style={{ width: `${Math.min(pct * 10, 100)}%` }}
                               />
                             </div>
@@ -195,7 +260,7 @@ export default function WhaleLeaderboard() {
         </div>
 
         <p className="text-[10px] font-mono text-slate-600 mt-3 text-center">
-          Live data via Polygonscan · Contract and dead addresses excluded · Top 20 non-system wallets shown
+          Live data via Polygonscan · System/protocol addresses shown with descriptions · Top 25 addresses including contracts
         </p>
 
       </div>
