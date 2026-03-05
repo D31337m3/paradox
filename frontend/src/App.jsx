@@ -4,6 +4,7 @@ import Navbar               from "./components/Navbar.jsx";
 import PanelWindow          from "./components/PanelWindow.jsx";
 import Hero                 from "./components/Hero.jsx";
 import LiveStats            from "./components/LiveStats.jsx";
+import Observatory          from "./components/Observatory.jsx";
 import EpochSection         from "./components/EpochSection.jsx";
 import ParticipantDashboard from "./components/ParticipantDashboard.jsx";
 import Manifesto            from "./components/Manifesto.jsx";
@@ -12,6 +13,7 @@ import BurnNFTs             from "./components/BurnNFTs.jsx";
 import NFTPreviews          from "./components/NFTPreviews.jsx";
 import MyBurnNFTs           from "./components/MyBurnNFTs.jsx";
 import TradeLinks           from "./components/TradeLinks.jsx";
+import WhaleLeaderboard     from "./components/WhaleLeaderboard.jsx";
 import ShareLinks           from "./components/ShareLinks.jsx";
 import ChatCTA              from "./components/ChatCTA.jsx";
 import Chat                 from "./components/Chat.jsx";
@@ -45,6 +47,7 @@ export default function App() {
         {activePanel === "overview" && (
           <PanelWindow key="overview" id="overview" onClose={closePanel}>
             <LiveStats />
+            <Observatory />
             <BeliefMetrics />
             <SecurityStatus />
             <Manifesto />
@@ -66,6 +69,7 @@ export default function App() {
         {activePanel === "trade" && (
           <PanelWindow key="trade" id="trade" onClose={closePanel}>
             <TradeLinks />
+            <WhaleLeaderboard />
             <Tokenomics />
             <ShareLinks />
           </PanelWindow>
