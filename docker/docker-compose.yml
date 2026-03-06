@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    container_name: paradox-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - paradox
+
+  chat:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.chat
+    container_name: paradox-chat
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - chat-data:/app/chat.db
+    networks:
+      - paradox
+
+  nginx:
+    image: nginx:alpine
+    container_name: paradox-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - chat
+    networks:
+      - paradox
+
+volumes:
+  chat-data:
+
+networks:
+  paradox:
+    driver: bridge

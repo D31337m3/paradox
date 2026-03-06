@@ -4,6 +4,33 @@ import { useTokenStats, useEpochData, useTreasuryBalance } from "../hooks/usePar
 import { formatUnits } from "viem";
 import { CONTRACT_ADDRESSES } from "../contracts/addresses.js";
 
+const LP_PAIR = "0x4d35Ee91Cc47e108F9f21a1551345cce93817B9E";
+
+function useDexScreener() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    const fetch_ = () => {
+      fetch(`https://api.geckoterminal.com/api/v2/networks/polygon_pos/pools/${LP_PAIR}`)
+        .then(r => r.json())
+        .then(j => {
+          const a = j?.data?.attributes;
+          if (!a) return;
+          setData({
+            priceUsd:    a.base_token_price_usd,
+            priceChange: { h24: parseFloat(a.price_change_percentage?.h24 ?? 0) },
+            volume:      { h24: parseFloat(a.volume_usd?.h24 ?? 0) },
+            liquidity:   { usd: parseFloat(a.reserve_in_usd ?? 0) },
+          });
+        })
+        .catch(() => {});
+    };
+    fetch_();
+    const interval = setInterval(fetch_, 30_000);
+    return () => clearInterval(interval);
+  }, []);
+  return data;
+}
+
 /* ── Animated counter ── */
 function Counter({ value, decimals = 0, suffix = "" }) {
   const [display, setDisplay] = useState(0);
@@ -93,8 +120,16 @@ export default function LiveStats() {
   const { isDeployed, isLoading: tokenLoading, totalSupply, symbol } = useTokenStats();
   const { isLoading: epochLoading, epoch, epochId, timeLeft, liveCCI } = useEpochData();
   const { balance: treasuryBalance } = useTreasuryBalance();
+  const dex = useDexScreener();
 
   const loading = tokenLoading || epochLoading;
+
+  const pdxPrice      = dex?.priceUsd ? `$${parseFloat(dex.priceUsd).toFixed(6)}` : "—";
+  const change24      = dex?.priceChange?.h24;
+  const change24Fmt   = change24 != null ? `${change24 >= 0 ? "+" : ""}${change24.toFixed(2)}%` : "—";
+  const change24Color = change24 == null ? "text-slate-400" : change24 >= 0 ? "text-emerald-400" : "text-red-400";
+  const vol24Fmt      = dex?.volume?.h24 != null ? `$${(dex.volume.h24 / 1000).toFixed(1)}K` : "—";
+  const liqFmt        = dex?.liquidity?.usd != null ? `$${(dex.liquidity.usd / 1000).toFixed(1)}K` : "—";
 
   const supplyFmt   = totalSupply ? parseFloat(formatUnits(totalSupply, 18)).toLocaleString() : "1,000,000,000";
   const lockedFmt   = epoch?.totalLocked  ? parseFloat(formatUnits(epoch.totalLocked,  18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—";
@@ -105,10 +140,14 @@ export default function LiveStats() {
   const cci = liveCCI ?? (epoch?.cci ? Number(epoch.cci) : 0);
 
   const stats = [
-    { label: "Total Supply",      value: "1,000,000,000", sub: "PDX",         color: "text-purple-300" },
-    { label: "Epoch",             value: epochId != null ? `#${epochId}` : "—", sub: "current",        color: "text-violet-300" },
-    { label: "Locked This Epoch", value: lockedFmt,        sub: "PDX",         color: "text-purple-400" },
-    { label: "Burned This Epoch", value: burnedFmt,        sub: "PDX",         color: "text-pink-400"   },
+    { label: "Live PDX Price",    value: pdxPrice,          sub: "Polygon mainnet", color: "text-emerald-400" },
+    { label: "24h Change",        value: change24Fmt,       sub: "DexScreener",     color: change24Color      },
+    { label: "24h Volume",        value: vol24Fmt,          sub: "DEX trading",     color: "text-sky-400"     },
+    { label: "Pooled Liquidity",  value: liqFmt,            sub: "DEX pool",        color: "text-violet-300"  },
+    { label: "Total Supply",      value: "1,000,000,000",   sub: "PDX",             color: "text-purple-300"  },
+    { label: "Epoch",             value: epochId != null ? `#${epochId}` : "—", sub: "current", color: "text-violet-300" },
+    { label: "Locked This Epoch", value: lockedFmt,         sub: "PDX",             color: "text-purple-400"  },
+    { label: "Burned This Epoch", value: burnedFmt,         sub: "PDX",             color: "text-pink-400"    },
   ];
 
   return (
@@ -148,7 +187,7 @@ export default function LiveStats() {
           </motion.div>
 
           {/* Stat grid */}
-          <div className="lg:col-span-2 grid grid-cols-2 gap-4">
+          <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-4">
             {stats.map((s, i) => (
               <motion.div
                 key={s.label} custom={i + 1} variants={fadeUp} initial="hidden"

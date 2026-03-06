@@ -3,7 +3,6 @@ import { AnimatePresence } from "framer-motion";
 import Navbar               from "./components/Navbar.jsx";
 import PanelWindow          from "./components/PanelWindow.jsx";
 import Hero                 from "./components/Hero.jsx";
-import LiveStats            from "./components/LiveStats.jsx";
 import Observatory          from "./components/Observatory.jsx";
 import EpochSection         from "./components/EpochSection.jsx";
 import ParticipantDashboard from "./components/ParticipantDashboard.jsx";
@@ -46,7 +45,6 @@ export default function App() {
       <AnimatePresence mode="wait">
         {activePanel === "overview" && (
           <PanelWindow key="overview" id="overview" onClose={closePanel}>
-            <LiveStats />
             <Observatory />
             <BeliefMetrics />
             <SecurityStatus />
