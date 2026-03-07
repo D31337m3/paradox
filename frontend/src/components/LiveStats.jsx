@@ -124,7 +124,7 @@ export default function LiveStats() {
 
   const loading = tokenLoading || epochLoading;
 
-  const pdxPrice      = dex?.priceUsd ? `$${parseFloat(dex.priceUsd).toFixed(6)}` : "—";
+  const pdxPrice      = dex?.priceUsd ? `$${parseFloat(dex.priceUsd).toFixed(11)}` : "—";
   const change24      = dex?.priceChange?.h24;
   const change24Fmt   = change24 != null ? `${change24 >= 0 ? "+" : ""}${change24.toFixed(2)}%` : "—";
   const change24Color = change24 == null ? "text-slate-400" : change24 >= 0 ? "text-emerald-400" : "text-red-400";

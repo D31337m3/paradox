@@ -177,7 +177,7 @@ export default function Observatory() {
 
   /* Market data */
   const price    = dex?.priceUsd
-    ? `$${dex.priceUsd}`
+    ? `$${parseFloat(dex.priceUsd).toFixed(11)}`
     : null;
   const change24 = dex?.priceChange?.h24;
   const vol24    = dex?.volume?.h24    != null ? `$${(dex.volume.h24    / 1000).toFixed(1)}K` : null;
